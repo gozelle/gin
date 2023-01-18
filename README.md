@@ -1,15 +1,15 @@
 # Gin Web Framework
 
-<img align="right" width="159px" src="https://raw.githubusercontent.com/gin-gonic/logo/master/color.png">
+<img align="right" width="159px" src="https://raw.githubusercontent.com/gozelle/logo/master/color.png">
 
 [![Build Status](https://github.com/gozelle/gin/workflows/Run%20Tests/badge.svg?branch=master)](https://github.com/gozelle/gin/actions?query=branch%3Amaster)
-[![codecov](https://codecov.io/gh/gin-gonic/gin/branch/master/graph/badge.svg)](https://codecov.io/gh/gin-gonic/gin)
+[![codecov](https://codecov.io/gh/gozelle/gin/branch/master/graph/badge.svg)](https://codecov.io/gh/gozelle/gin)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gozelle/gin)](https://goreportcard.com/report/github.com/gozelle/gin)
 [![GoDoc](https://pkg.go.dev/badge/github.com/gozelle/gin?status.svg)](https://pkg.go.dev/github.com/gozelle/gin?tab=doc)
-[![Join the chat at https://gitter.im/gin-gonic/gin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gin-gonic/gin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/gozelle/gin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gozelle/gin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Sourcegraph](https://sourcegraph.com/github.com/gozelle/gin/-/badge.svg)](https://sourcegraph.com/github.com/gozelle/gin?badge)
-[![Open Source Helpers](https://www.codetriage.com/gin-gonic/gin/badges/users.svg)](https://www.codetriage.com/gin-gonic/gin)
-[![Release](https://img.shields.io/github/release/gin-gonic/gin.svg?style=flat-square)](https://github.com/gozelle/gin/releases)
+[![Open Source Helpers](https://www.codetriage.com/gozelle/gin/badges/users.svg)](https://www.codetriage.com/gozelle/gin)
+[![Release](https://img.shields.io/github/release/gozelle/gin.svg?style=flat-square)](https://github.com/gozelle/gin/releases)
 [![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/gozelle/gin)](https://www.tickgit.com/browse?repo=github.com/gozelle/gin)
 
 Gin is a web framework written in [Go](https://go.dev/). It features a martini-like API with performance that is up to 40 times faster thanks to [httprouter](https://github.com/julienschmidt/httprouter). If you need performance and good productivity, you will love Gin.
@@ -88,7 +88,7 @@ Learn and practice more examples, please read the [Gin Quick Start](docs/doc.md)
 
 #### Examples
 
-A number of ready-to-run examples demonstrating various use cases of Gin on the [Gin examples](https://github.com/gin-gonic/examples) repository.
+A number of ready-to-run examples demonstrating various use cases of Gin on the [Gin examples](https://github.com/gozelle/examples) repository.
 
 
 ## Documentation
@@ -97,14 +97,14 @@ See [API documentation and descriptions](https://godoc.org/github.com/gozelle/gi
 
 All documentation is available on the Gin website.
 
-- [English](https://gin-gonic.com/docs/)
-- [简体中文](https://gin-gonic.com/zh-cn/docs/)
-- [繁體中文](https://gin-gonic.com/zh-tw/docs/)
-- [日本語](https://gin-gonic.com/ja/docs/)
-- [Español](https://gin-gonic.com/es/docs/)
-- [한국어](https://gin-gonic.com/ko-kr/docs/)
-- [Turkish](https://gin-gonic.com/tr/docs/)
-- [Persian](https://gin-gonic.com/fa/docs/)
+- [English](https://gozelle.com/docs/)
+- [简体中文](https://gozelle.com/zh-cn/docs/)
+- [繁體中文](https://gozelle.com/zh-tw/docs/)
+- [日本語](https://gozelle.com/ja/docs/)
+- [Español](https://gozelle.com/es/docs/)
+- [한국어](https://gozelle.com/ko-kr/docs/)
+- [Turkish](https://gozelle.com/tr/docs/)
+- [Persian](https://gozelle.com/fa/docs/)
 
 ### Articles about Gin
 

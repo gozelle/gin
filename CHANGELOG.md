@@ -258,7 +258,7 @@
 - [NEW] Support mapping time.Duration [#1794](https://github.com/gozelle/gin/pull/1794)
 - [NEW] Refactor form mappings [#1749](https://github.com/gozelle/gin/pull/1749)
 - [NEW] Added flag to context.Stream indicates if client disconnected in middle of stream [#1252](https://github.com/gozelle/gin/pull/1252)
-- [FIX] Moved [examples](https://github.com/gin-gonic/examples) to stand alone Repo [#1775](https://github.com/gozelle/gin/pull/1775)
+- [FIX] Moved [examples](https://github.com/gozelle/examples) to stand alone Repo [#1775](https://github.com/gozelle/gin/pull/1775)
 - [NEW] Extend context.File to allow for the content-disposition attachments via a new method context.Attachment [#1260](https://github.com/gozelle/gin/pull/1260)
 - [FIX] Support HTTP content negotiation wildcards [#1112](https://github.com/gozelle/gin/pull/1112)
 - [NEW] Add prefix from X-Forwarded-Prefix in redirectTrailingSlash [#1238](https://github.com/gozelle/gin/pull/1238)
@@ -325,7 +325,7 @@
 ## Gin 1.2.0
 
 - [NEW] Switch from godeps to govendor
-- [NEW] Add support for Let's Encrypt via gin-gonic/autotls
+- [NEW] Add support for Let's Encrypt via gozelle/autotls
 - [NEW] Improve README examples and add extra at examples folder
 - [NEW] Improved support with App Engine
 - [NEW] Add custom template delimiters, see #860

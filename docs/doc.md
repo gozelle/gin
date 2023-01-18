@@ -99,7 +99,7 @@ This is useful to reduce the binary size of executable files. See the [detail in
 
 ## API Examples
 
-You can find a number of ready-to-run examples at [Gin examples repository](https://github.com/gin-gonic/examples).
+You can find a number of ready-to-run examples at [Gin examples repository](https://github.com/gozelle/examples).
 
 ### Using GET, POST, PUT, PATCH, DELETE and OPTIONS
 
@@ -262,7 +262,7 @@ ids: map[b:hello a:1234]; names: map[second:tianou first:thinkerou]
 
 #### Single file
 
-References issue [#774](https://github.com/gozelle/gin/issues/774) and detail [example code](https://github.com/gin-gonic/examples/tree/master/upload-file/single).
+References issue [#774](https://github.com/gozelle/gin/issues/774) and detail [example code](https://github.com/gozelle/examples/tree/master/upload-file/single).
 
 `file.Filename` **SHOULD NOT** be trusted. See [`Content-Disposition` on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#Directives) and [#1693](https://github.com/gozelle/gin/issues/1693)
 
@@ -297,7 +297,7 @@ curl -X POST http://localhost:8080/upload \
 
 #### Multiple files
 
-See the detail [example code](https://github.com/gin-gonic/examples/tree/master/upload-file/multiple).
+See the detail [example code](https://github.com/gozelle/examples/tree/master/upload-file/multiple).
 
 ```go
 func main() {
@@ -667,7 +667,7 @@ Skip validate: when running the above example using the above the `curl` command
 
 ### Custom Validators
 
-It is also possible to register custom validators. See the [example code](https://github.com/gin-gonic/examples/tree/master/custom-validation/server.go).
+It is also possible to register custom validators. See the [example code](https://github.com/gozelle/examples/tree/master/custom-validation/server.go).
 
 ```go
 package main
@@ -731,7 +731,7 @@ $ curl "localhost:8085/bookable?check_in=2000-03-09&check_out=2000-03-10"
 ```
 
 [Struct level validations](https://github.com/go-playground/validator/releases/tag/v8.7) can also be registered this way.
-See the [struct-lvl-validation example](https://github.com/gin-gonic/examples/tree/master/struct-lvl-validations) to learn more.
+See the [struct-lvl-validation example](https://github.com/gozelle/examples/tree/master/struct-lvl-validations) to learn more.
 
 ### Only Bind Query String
 
@@ -1185,7 +1185,7 @@ func main() {
 func main() {
   router := gin.Default()
   router.GET("/someDataFromReader", func(c *gin.Context) {
-    response, err := http.Get("https://raw.githubusercontent.com/gin-gonic/logo/master/color.png")
+    response, err := http.Get("https://raw.githubusercontent.com/gozelle/logo/master/color.png")
     if err != nil || response.StatusCode != http.StatusOK {
       c.Status(http.StatusServiceUnavailable)
       return
@@ -1305,7 +1305,7 @@ You may use custom delims
 
 #### Custom Template Funcs
 
-See the detail [example code](https://github.com/gin-gonic/examples/tree/master/template).
+See the detail [example code](https://github.com/gozelle/examples/tree/master/template).
 
 main.go
 
@@ -1540,7 +1540,7 @@ import (
   "log"
   "net/http"
 
-  "github.com/gin-gonic/autotls"
+  "github.com/gozelle/autotls"
   "github.com/gozelle/gin"
 )
 
@@ -1565,7 +1565,7 @@ import (
   "log"
   "net/http"
 
-  "github.com/gin-gonic/autotls"
+  "github.com/gozelle/autotls"
   "github.com/gozelle/gin"
   "golang.org/x/crypto/acme/autocert"
 )
@@ -1700,7 +1700,7 @@ Alternatives:
 
 #### Manually
 
-In case you are using Go 1.8 or a later version, you may not need to use those libraries. Consider using `http.Server`'s built-in [Shutdown()](https://pkg.go.dev/net/http#Server.Shutdown) method for graceful shutdowns. The example below describes its usage, and we've got more examples using gin [here](https://github.com/gin-gonic/examples/tree/master/graceful-shutdown).
+In case you are using Go 1.8 or a later version, you may not need to use those libraries. Consider using `http.Server`'s built-in [Shutdown()](https://pkg.go.dev/net/http#Server.Shutdown) method for graceful shutdowns. The example below describes its usage, and we've got more examples using gin [here](https://github.com/gozelle/examples/tree/master/graceful-shutdown).
 
 ```go
 // +build go1.8
@@ -1813,7 +1813,7 @@ func main() {
 }
 ```
 
-See a complete example in the `https://github.com/gin-gonic/examples/tree/master/assets-in-binary/example02` directory.
+See a complete example in the `https://github.com/gozelle/examples/tree/master/assets-in-binary/example02` directory.
 
 ### Bind form-data request with custom struct
 

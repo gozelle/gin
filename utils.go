@@ -16,7 +16,7 @@ import (
 )
 
 // BindKey indicates a default bind key.
-const BindKey = "_gin-gonic/gin/bindkey"
+const BindKey = "_gozelle/gin/bindkey"
 
 // Bind is a helper function for given interface object and returns a Gin middleware.
 func Bind(val any) HandlerFunc {
@@ -27,7 +27,7 @@ func Bind(val any) HandlerFunc {
 `)
 	}
 	typ := value.Type()
-
+	
 	return func(c *Context) {
 		obj := reflect.New(typ).Interface()
 		if c.Bind(obj) == nil {
@@ -71,7 +71,7 @@ func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return err
 		}
 	}
-
+	
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
@@ -129,7 +129,7 @@ func joinPaths(absolutePath, relativePath string) string {
 	if relativePath == "" {
 		return absolutePath
 	}
-
+	
 	finalPath := path.Join(absolutePath, relativePath)
 	if lastChar(relativePath) == '/' && lastChar(finalPath) != '/' {
 		return finalPath + "/"
