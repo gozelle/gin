@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-
+	
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,11 +44,11 @@ func TestWrap(t *testing.T) {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "hola!")
 	}))
-
+	
 	w := PerformRequest(router, "POST", "/path")
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "hello", w.Body.String())
-
+	
 	w = PerformRequest(router, "GET", "/path2")
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	assert.Equal(t, "hola!", w.Body.String())
@@ -80,13 +80,13 @@ func TestChooseData(t *testing.T) {
 func TestFilterFlags(t *testing.T) {
 	result := filterFlags("text/html ")
 	assert.Equal(t, "text/html", result)
-
+	
 	result = filterFlags("text/html;")
 	assert.Equal(t, "text/html", result)
 }
 
 func TestFunctionName(t *testing.T) {
-	assert.Regexp(t, `^(.*/vendor/)?github.com/gin-gonic/gin.somefunction$`, nameOfFunction(somefunction))
+	assert.Regexp(t, `^(.*/vendor/)?github.com/gozelle/gin.somefunction$`, nameOfFunction(somefunction))
 }
 
 func somefunction() {
@@ -123,11 +123,11 @@ func TestBindMiddleware(t *testing.T) {
 	assert.True(t, called)
 	assert.Equal(t, "hola", value.Foo)
 	assert.Equal(t, 10, value.Bar)
-
+	
 	called = false
 	PerformRequest(router, "GET", "/?foo=hola&bar=1")
 	assert.False(t, called)
-
+	
 	assert.Panics(t, func() {
 		Bind(&bindTestStruct{})
 	})

@@ -8,8 +8,8 @@ import (
 	"flag"
 	"os"
 	"testing"
-
-	"github.com/gin-gonic/gin/binding"
+	
+	"github.com/gozelle/gin/binding"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,30 +21,30 @@ func TestSetMode(t *testing.T) {
 	assert.Equal(t, testCode, ginMode)
 	assert.Equal(t, TestMode, Mode())
 	os.Unsetenv(EnvGinMode)
-
+	
 	SetMode("")
 	assert.Equal(t, testCode, ginMode)
 	assert.Equal(t, TestMode, Mode())
-
+	
 	tmp := flag.CommandLine
 	flag.CommandLine = flag.NewFlagSet("", flag.ContinueOnError)
 	SetMode("")
 	assert.Equal(t, debugCode, ginMode)
 	assert.Equal(t, DebugMode, Mode())
 	flag.CommandLine = tmp
-
+	
 	SetMode(DebugMode)
 	assert.Equal(t, debugCode, ginMode)
 	assert.Equal(t, DebugMode, Mode())
-
+	
 	SetMode(ReleaseMode)
 	assert.Equal(t, releaseCode, ginMode)
 	assert.Equal(t, ReleaseMode, Mode())
-
+	
 	SetMode(TestMode)
 	assert.Equal(t, testCode, ginMode)
 	assert.Equal(t, TestMode, Mode())
-
+	
 	assert.Panics(t, func() { SetMode("unknown") })
 }
 

@@ -9,8 +9,8 @@ import (
 	"encoding/base64"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin/internal/bytesconv"
+	
+	"github.com/gozelle/gin/internal/bytesconv"
 )
 
 // AuthUserKey is the cookie name for user credential in basic auth.
@@ -57,7 +57,7 @@ func BasicAuthForRealm(accounts Accounts, realm string) HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
+		
 		// The user credentials was found, set user's id to key AuthUserKey in this context, the user's id can be read later using
 		// c.MustGet(gin.AuthUserKey).
 		c.Set(AuthUserKey, user)

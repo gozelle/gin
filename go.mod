@@ -1,4 +1,4 @@
-module github.com/gin-gonic/gin
+module github.com/gozelle/gin
 
 go 1.18
 
@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/goccy/go-json v0.10.0
 	github.com/json-iterator/go v1.1.12
-	github.com/mattn/go-isatty v0.0.17
+	github.com/gozelle/isatty v0.0.17
 	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/stretchr/testify v1.8.1
 	github.com/ugorji/go/codec v1.2.8

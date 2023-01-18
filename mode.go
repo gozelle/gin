@@ -8,8 +8,8 @@ import (
 	"flag"
 	"io"
 	"os"
-
-	"github.com/gin-gonic/gin/binding"
+	
+	"github.com/gozelle/gin/binding"
 )
 
 // EnvGinMode indicates environment name for gin mode.
@@ -62,7 +62,7 @@ func SetMode(value string) {
 			value = DebugMode
 		}
 	}
-
+	
 	switch value {
 	case DebugMode:
 		ginMode = debugCode
@@ -73,7 +73,7 @@ func SetMode(value string) {
 	default:
 		panic("gin mode unknown: " + value + " (available mode: debug release test)")
 	}
-
+	
 	modeName = value
 }
 
