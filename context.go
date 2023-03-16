@@ -652,7 +652,7 @@ func (c *Context) BindYAML(obj any) error {
 }
 
 // BindTOML is a shortcut for c.MustBindWith(obj, binding.TOML).
-func (c *Context) BindTOML(obj interface{}) error {
+func (c *Context) BindTOML(obj any) error {
 	return c.MustBindWith(obj, binding.TOML)
 }
 
@@ -717,7 +717,7 @@ func (c *Context) ShouldBindYAML(obj any) error {
 }
 
 // ShouldBindTOML is a shortcut for c.ShouldBindWith(obj, binding.TOML).
-func (c *Context) ShouldBindTOML(obj interface{}) error {
+func (c *Context) ShouldBindTOML(obj any) error {
 	return c.ShouldBindWith(obj, binding.TOML)
 }
 
@@ -924,7 +924,9 @@ func (c *Context) Render(code int, r render.Render) {
 	}
 	
 	if err := r.Render(c.Writer); err != nil {
-		panic(err)
+		// Pushing error to c.Errors
+		_ = c.Error(err)
+		c.Abort()
 	}
 }
 
@@ -993,7 +995,7 @@ func (c *Context) YAML(code int, obj any) {
 }
 
 // TOML serializes the given struct as TOML into the response body.
-func (c *Context) TOML(code int, obj interface{}) {
+func (c *Context) TOML(code int, obj any) {
 	c.Render(code, render.TOML{Data: obj})
 }
 
