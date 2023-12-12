@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/mattn/go-isatty"
+	
+	"github.com/gozelle/isatty"
 )
 
 type consoleColorModeValue int
@@ -39,11 +39,11 @@ var consoleColorMode = autoColor
 type LoggerConfig struct {
 	// Optional. Default value is gin.defaultLogFormatter
 	Formatter LogFormatter
-
+	
 	// Output is a writer where logs are written.
 	// Optional. Default value is gin.DefaultWriter.
 	Output io.Writer
-
+	
 	// SkipPaths is an url path array which logs are not written.
 	// Optional.
 	SkipPaths []string
@@ -55,7 +55,7 @@ type LogFormatter func(params LogFormatterParams) string
 // LogFormatterParams is the structure any formatter will be handed when time to log comes
 type LogFormatterParams struct {
 	Request *http.Request
-
+	
 	// TimeStamp shows the time after the server returns a response.
 	TimeStamp time.Time
 	// StatusCode is HTTP response code.
@@ -81,7 +81,7 @@ type LogFormatterParams struct {
 // StatusCodeColor is the ANSI color for appropriately logging http status code to a terminal.
 func (p *LogFormatterParams) StatusCodeColor() string {
 	code := p.StatusCode
-
+	
 	switch {
 	case code >= http.StatusContinue && code < http.StatusOK:
 		return white
@@ -99,7 +99,7 @@ func (p *LogFormatterParams) StatusCodeColor() string {
 // MethodColor is the ANSI color for appropriately logging http method to a terminal.
 func (p *LogFormatterParams) MethodColor() string {
 	method := p.Method
-
+	
 	switch method {
 	case http.MethodGet:
 		return blue
@@ -138,7 +138,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 		methodColor = param.MethodColor()
 		resetColor = param.ResetColor()
 	}
-
+	
 	if param.Latency > time.Minute {
 		param.Latency = param.Latency.Truncate(time.Second)
 	}
@@ -207,40 +207,40 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 	if formatter == nil {
 		formatter = defaultLogFormatter
 	}
-
+	
 	out := conf.Output
 	if out == nil {
 		out = DefaultWriter
 	}
-
+	
 	notlogged := conf.SkipPaths
-
+	
 	isTerm := true
-
+	
 	if w, ok := out.(*os.File); !ok || os.Getenv("TERM") == "dumb" ||
 		(!isatty.IsTerminal(w.Fd()) && !isatty.IsCygwinTerminal(w.Fd())) {
 		isTerm = false
 	}
-
+	
 	var skip map[string]struct{}
-
+	
 	if length := len(notlogged); length > 0 {
 		skip = make(map[string]struct{}, length)
-
+		
 		for _, path := range notlogged {
 			skip[path] = struct{}{}
 		}
 	}
-
+	
 	return func(c *Context) {
 		// Start timer
 		start := time.Now()
 		path := c.Request.URL.Path
 		raw := c.Request.URL.RawQuery
-
+		
 		// Process request
 		c.Next()
-
+		
 		// Log only when path is not being skipped
 		if _, ok := skip[path]; !ok {
 			param := LogFormatterParams{
@@ -248,24 +248,24 @@ func LoggerWithConfig(conf LoggerConfig) HandlerFunc {
 				isTerm:  isTerm,
 				Keys:    c.Keys,
 			}
-
+			
 			// Stop timer
 			param.TimeStamp = time.Now()
 			param.Latency = param.TimeStamp.Sub(start)
-
+			
 			param.ClientIP = c.ClientIP()
 			param.Method = c.Request.Method
 			param.StatusCode = c.Writer.Status()
 			param.ErrorMessage = c.Errors.ByType(ErrorTypePrivate).String()
-
+			
 			param.BodySize = c.Writer.Size()
-
+			
 			if raw != "" {
 				path = path + "?" + raw
 			}
-
+			
 			param.Path = path
-
+			
 			fmt.Fprint(out, formatter(param))
 		}
 	}

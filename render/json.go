@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-
-	"github.com/gin-gonic/gin/internal/bytesconv"
-	"github.com/gin-gonic/gin/internal/json"
+	
+	"github.com/gozelle/gin/internal/bytesconv"
+	"github.com/gozelle/gin/internal/json"
 )
 
 // JSON contains the given interface object.
@@ -119,29 +119,29 @@ func (r JsonpJSON) Render(w http.ResponseWriter) (err error) {
 	if err != nil {
 		return err
 	}
-
+	
 	if r.Callback == "" {
 		_, err = w.Write(ret)
 		return err
 	}
-
+	
 	callback := template.JSEscapeString(r.Callback)
 	if _, err = w.Write(bytesconv.StringToBytes(callback)); err != nil {
 		return err
 	}
-
+	
 	if _, err = w.Write(bytesconv.StringToBytes("(")); err != nil {
 		return err
 	}
-
+	
 	if _, err = w.Write(ret); err != nil {
 		return err
 	}
-
+	
 	if _, err = w.Write(bytesconv.StringToBytes(");")); err != nil {
 		return err
 	}
-
+	
 	return nil
 }
 
@@ -157,7 +157,7 @@ func (r AsciiJSON) Render(w http.ResponseWriter) (err error) {
 	if err != nil {
 		return err
 	}
-
+	
 	var buffer bytes.Buffer
 	for _, r := range bytesconv.BytesToString(ret) {
 		cvt := string(r)
@@ -166,7 +166,7 @@ func (r AsciiJSON) Render(w http.ResponseWriter) (err error) {
 		}
 		buffer.WriteString(cvt)
 	}
-
+	
 	_, err = w.Write(buffer.Bytes())
 	return err
 }

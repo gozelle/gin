@@ -18,10 +18,10 @@ import (
 	"strings"
 	"sync"
 	"time"
-
+	
 	"github.com/gin-contrib/sse"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/gin-gonic/gin/render"
+	"github.com/gozelle/gin/binding"
+	"github.com/gozelle/gin/render"
 )
 
 // Content-Type MIME of the most common data formats.
@@ -38,10 +38,10 @@ const (
 )
 
 // BodyBytesKey indicates a default body bytes key.
-const BodyBytesKey = "_gin-gonic/gin/bodybyteskey"
+const BodyBytesKey = "_gozelle/gin/bodybyteskey"
 
 // ContextKey is the key that a Context returns itself for.
-const ContextKey = "_gin-gonic/gin/contextkey"
+const ContextKey = "_gozelle/gin/contextkey"
 
 // abortIndex represents a typical value used in abort functions.
 const abortIndex int8 = math.MaxInt8 >> 1
@@ -52,35 +52,35 @@ type Context struct {
 	writermem responseWriter
 	Request   *http.Request
 	Writer    ResponseWriter
-
+	
 	Params   Params
 	handlers HandlersChain
 	index    int8
 	fullPath string
-
+	
 	engine       *Engine
 	params       *Params
 	skippedNodes *[]skippedNode
-
+	
 	// This mutex protects Keys map.
 	mu sync.RWMutex
-
+	
 	// Keys is a key/value pair exclusively for the context of each request.
 	Keys map[string]any
-
+	
 	// Errors is a list of errors attached to all the handlers/middlewares who used this context.
 	Errors errorMsgs
-
+	
 	// Accepted defines a list of manually accepted formats for content negotiation.
 	Accepted []string
-
+	
 	// queryCache caches the query result from c.Request.URL.Query().
 	queryCache url.Values
-
+	
 	// formCache caches c.Request.PostForm, which contains the parsed form data from POST, PATCH,
 	// or PUT body parameters.
 	formCache url.Values
-
+	
 	// SameSite allows a server to define a cookie attribute making it impossible for
 	// the browser to send this cookie along with cross-site requests.
 	sameSite http.SameSite
@@ -95,7 +95,7 @@ func (c *Context) reset() {
 	c.Params = c.Params[:0]
 	c.handlers = nil
 	c.index = -1
-
+	
 	c.fullPath = ""
 	c.Keys = nil
 	c.Errors = c.Errors[:0]
@@ -226,7 +226,7 @@ func (c *Context) Error(err error) *Error {
 	if err == nil {
 		panic("err is nil")
 	}
-
+	
 	var parsedError *Error
 	ok := errors.As(err, &parsedError)
 	if !ok {
@@ -235,7 +235,7 @@ func (c *Context) Error(err error) *Error {
 			Type: ErrorTypePrivate,
 		}
 	}
-
+	
 	c.Errors = append(c.Errors, parsedError)
 	return parsedError
 }
@@ -252,7 +252,7 @@ func (c *Context) Set(key string, value any) {
 	if c.Keys == nil {
 		c.Keys = make(map[string]any)
 	}
-
+	
 	c.Keys[key] = value
 }
 
@@ -602,17 +602,17 @@ func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string) error
 		return err
 	}
 	defer src.Close()
-
+	
 	if err = os.MkdirAll(filepath.Dir(dst), 0750); err != nil {
 		return err
 	}
-
+	
 	out, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
 	defer out.Close()
-
+	
 	_, err = io.Copy(out, src)
 	return err
 }
@@ -776,7 +776,7 @@ func (c *Context) ClientIP() string {
 			return addr
 		}
 	}
-
+	
 	// Legacy "AppEngine" flag
 	if c.engine.AppEngine {
 		log.Println(`The AppEngine flag is going to be deprecated. Please check issues #2723 and #2739 and use 'TrustedPlatform: gin.PlatformGoogleAppEngine' instead.`)
@@ -784,7 +784,7 @@ func (c *Context) ClientIP() string {
 			return addr
 		}
 	}
-
+	
 	// It also checks if the remoteIP is a trusted proxy or not.
 	// In order to perform this validation, it will see if the IP is contained within at least one of the CIDR blocks
 	// defined by Engine.SetTrustedProxies()
@@ -793,7 +793,7 @@ func (c *Context) ClientIP() string {
 		return ""
 	}
 	trusted := c.engine.isTrustedProxy(remoteIP)
-
+	
 	if trusted && c.engine.ForwardedByClientIP && c.engine.RemoteIPHeaders != nil {
 		for _, headerName := range c.engine.RemoteIPHeaders {
 			ip, valid := c.engine.validateHeader(c.requestHeader(headerName))
@@ -916,13 +916,13 @@ func (c *Context) Cookie(name string) (string, error) {
 // Render writes the response headers and calls render.Render to render data.
 func (c *Context) Render(code int, r render.Render) {
 	c.Status(code)
-
+	
 	if !bodyAllowedForStatus(code) {
 		r.WriteContentType(c.Writer)
 		c.Writer.WriteHeaderNow()
 		return
 	}
-
+	
 	if err := r.Render(c.Writer); err != nil {
 		// Pushing error to c.Errors
 		_ = c.Error(err)
@@ -1046,9 +1046,9 @@ func (c *Context) FileFromFS(filepath string, fs http.FileSystem) {
 	defer func(old string) {
 		c.Request.URL.Path = old
 	}(c.Request.URL.Path)
-
+	
 	c.Request.URL.Path = filepath
-
+	
 	http.FileServer(fs).ServeHTTP(c.Writer, c.Request)
 }
 
@@ -1118,23 +1118,23 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 	case binding.MIMEJSON:
 		data := chooseData(config.JSONData, config.Data)
 		c.JSON(code, data)
-
+	
 	case binding.MIMEHTML:
 		data := chooseData(config.HTMLData, config.Data)
 		c.HTML(code, config.HTMLName, data)
-
+	
 	case binding.MIMEXML:
 		data := chooseData(config.XMLData, config.Data)
 		c.XML(code, data)
-
+	
 	case binding.MIMEYAML:
 		data := chooseData(config.YAMLData, config.Data)
 		c.YAML(code, data)
-
+	
 	case binding.MIMETOML:
 		data := chooseData(config.TOMLData, config.Data)
 		c.TOML(code, data)
-
+	
 	default:
 		c.AbortWithError(http.StatusNotAcceptable, errors.New("the accepted formats are not offered by the server")) //nolint: errcheck
 	}
@@ -1143,7 +1143,7 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 // NegotiateFormat returns an acceptable Accept format.
 func (c *Context) NegotiateFormat(offered ...string) string {
 	assert1(len(offered) > 0, "you must provide at least one offer")
-
+	
 	if c.Accepted == nil {
 		c.Accepted = parseAccept(c.requestHeader("Accept"))
 	}

@@ -14,9 +14,9 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-
-	"github.com/gin-gonic/gin/internal/bytesconv"
-	"github.com/gin-gonic/gin/render"
+	
+	"github.com/gozelle/gin/internal/bytesconv"
+	"github.com/gozelle/gin/render"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -83,14 +83,14 @@ const (
 // Create an instance of Engine, by using New() or Default()
 type Engine struct {
 	RouterGroup
-
+	
 	// RedirectTrailingSlash enables automatic redirection if the current route can't be matched but a
 	// handler for the path with (without) the trailing slash exists.
 	// For example if /foo/ is requested but a route only exists for /foo, the
 	// client is redirected to /foo with http status code 301 for GET requests
 	// and 307 for all other request methods.
 	RedirectTrailingSlash bool
-
+	
 	// RedirectFixedPath if enabled, the router tries to fix the current request path, if no
 	// handle is registered for it.
 	// First superfluous path elements like ../ or // are removed.
@@ -101,7 +101,7 @@ type Engine struct {
 	// For example /FOO and /..//Foo could be redirected to /foo.
 	// RedirectTrailingSlash is independent of this option.
 	RedirectFixedPath bool
-
+	
 	// HandleMethodNotAllowed if enabled, the router checks if another method is allowed for the
 	// current route, if the current request can not be routed.
 	// If this is the case, the request is answered with 'Method Not Allowed'
@@ -109,51 +109,51 @@ type Engine struct {
 	// If no other Method is allowed, the request is delegated to the NotFound
 	// handler.
 	HandleMethodNotAllowed bool
-
+	
 	// ForwardedByClientIP if enabled, client IP will be parsed from the request's headers that
 	// match those stored at `(*gin.Engine).RemoteIPHeaders`. If no IP was
 	// fetched, it falls back to the IP obtained from
 	// `(*gin.Context).Request.RemoteAddr`.
 	ForwardedByClientIP bool
-
+	
 	// AppEngine was deprecated.
 	// Deprecated: USE `TrustedPlatform` WITH VALUE `gin.PlatformGoogleAppEngine` INSTEAD
 	// #726 #755 If enabled, it will trust some headers starting with
 	// 'X-AppEngine...' for better integration with that PaaS.
 	AppEngine bool
-
+	
 	// UseRawPath if enabled, the url.RawPath will be used to find parameters.
 	UseRawPath bool
-
+	
 	// UnescapePathValues if true, the path value will be unescaped.
 	// If UseRawPath is false (by default), the UnescapePathValues effectively is true,
 	// as url.Path gonna be used, which is already unescaped.
 	UnescapePathValues bool
-
+	
 	// RemoveExtraSlash a parameter can be parsed from the URL even with extra slashes.
 	// See the PR #1817 and issue #1644
 	RemoveExtraSlash bool
-
+	
 	// RemoteIPHeaders list of headers used to obtain the client IP when
 	// `(*gin.Engine).ForwardedByClientIP` is `true` and
 	// `(*gin.Context).Request.RemoteAddr` is matched by at least one of the
 	// network origins of list defined by `(*gin.Engine).SetTrustedProxies()`.
 	RemoteIPHeaders []string
-
+	
 	// TrustedPlatform if set to a constant of value gin.Platform*, trusts the headers set by
 	// that platform, for example to determine the client IP
 	TrustedPlatform string
-
+	
 	// MaxMultipartMemory value of 'maxMemory' param that is given to http.Request's ParseMultipartForm
 	// method call.
 	MaxMultipartMemory int64
-
+	
 	// UseH2C enable h2c support.
 	UseH2C bool
-
+	
 	// ContextWithFallback enable fallback Context.Deadline(), Context.Done(), Context.Err() and Context.Value() when Context.Request.Context() is not nil.
 	ContextWithFallback bool
-
+	
 	delims           render.Delims
 	secureJSONPrefix string
 	HTMLRender       render.HTMLRender
@@ -224,7 +224,7 @@ func (engine *Engine) Handler() http.Handler {
 	if !engine.UseH2C {
 		return engine
 	}
-
+	
 	h2s := &http2.Server{}
 	return h2c.NewHandler(engine, h2s)
 }
@@ -253,13 +253,13 @@ func (engine *Engine) LoadHTMLGlob(pattern string) {
 	left := engine.delims.Left
 	right := engine.delims.Right
 	templ := template.Must(template.New("").Delims(left, right).Funcs(engine.FuncMap).ParseGlob(pattern))
-
+	
 	if IsDebugging() {
 		debugPrintLoadTemplate(templ)
 		engine.HTMLRender = render.HTMLDebug{Glob: pattern, FuncMap: engine.FuncMap, Delims: engine.delims}
 		return
 	}
-
+	
 	engine.SetHTMLTemplate(templ)
 }
 
@@ -270,7 +270,7 @@ func (engine *Engine) LoadHTMLFiles(files ...string) {
 		engine.HTMLRender = render.HTMLDebug{Files: files, FuncMap: engine.FuncMap, Delims: engine.delims}
 		return
 	}
-
+	
 	templ := template.Must(template.New("").Delims(engine.delims.Left, engine.delims.Right).Funcs(engine.FuncMap).ParseFiles(files...))
 	engine.SetHTMLTemplate(templ)
 }
@@ -280,7 +280,7 @@ func (engine *Engine) SetHTMLTemplate(templ *template.Template) {
 	if len(engine.trees) > 0 {
 		debugPrintWARNINGSetHTMLTemplate()
 	}
-
+	
 	engine.HTMLRender = render.HTMLProduction{Template: templ.Funcs(engine.FuncMap)}
 }
 
@@ -323,9 +323,9 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 	assert1(path[0] == '/', "path must begin with '/'")
 	assert1(method != "", "HTTP method can not be empty")
 	assert1(len(handlers) > 0, "there must be at least one handler")
-
+	
 	debugPrintRoute(method, path, handlers)
-
+	
 	root := engine.trees.get(method)
 	if root == nil {
 		root = new(node)
@@ -333,11 +333,12 @@ func (engine *Engine) addRoute(method, path string, handlers HandlersChain) {
 		engine.trees = append(engine.trees, methodTree{method: method, root: root})
 	}
 	root.addRoute(path, handlers)
-
+	
+	// Update maxParams
 	if paramsCount := countParams(path); paramsCount > engine.maxParams {
 		engine.maxParams = paramsCount
 	}
-
+	
 	if sectionsCount := countSections(path); sectionsCount > engine.maxSections {
 		engine.maxSections = sectionsCount
 	}
@@ -374,12 +375,12 @@ func iterate(path, method string, routes RoutesInfo, root *node) RoutesInfo {
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) Run(addr ...string) (err error) {
 	defer func() { debugPrintError(err) }()
-
+	
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
-			"Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.")
+			"Please check https://pkg.go.dev/github.com/gozelle/gin#readme-don-t-trust-all-proxies for details.")
 	}
-
+	
 	address := resolveAddress(addr)
 	debugPrint("Listening and serving HTTP on %s\n", address)
 	err = http.ListenAndServe(address, engine.Handler())
@@ -390,7 +391,7 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 	if engine.trustedProxies == nil {
 		return nil, nil
 	}
-
+	
 	cidr := make([]*net.IPNet, 0, len(engine.trustedProxies))
 	for _, trustedProxy := range engine.trustedProxies {
 		if !strings.Contains(trustedProxy, "/") {
@@ -398,7 +399,7 @@ func (engine *Engine) prepareTrustedCIDRs() ([]*net.IPNet, error) {
 			if ip == nil {
 				return cidr, &net.ParseError{Type: "IP address", Text: trustedProxy}
 			}
-
+			
 			switch len(ip) {
 			case net.IPv4len:
 				trustedProxy += "/32"
@@ -465,7 +466,7 @@ func (engine *Engine) validateHeader(header string) (clientIP string, valid bool
 		if ip == nil {
 			break
 		}
-
+		
 		// X-Forwarded-For is appended by proxy
 		// Check IPs in reverse order and stop when find untrusted proxy
 		if (i == 0) || (!engine.isTrustedProxy(ip)) {
@@ -479,12 +480,12 @@ func (engine *Engine) validateHeader(header string) (clientIP string, valid bool
 // minimum byte representation or nil if input is invalid.
 func parseIP(ip string) net.IP {
 	parsedIP := net.ParseIP(ip)
-
+	
 	if ipv4 := parsedIP.To4(); ipv4 != nil {
 		// return ip in a 4-byte representation
 		return ipv4
 	}
-
+	
 	// return ip in a 16-byte representation or nil
 	return parsedIP
 }
@@ -495,12 +496,12 @@ func parseIP(ip string) net.IP {
 func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
 	defer func() { debugPrintError(err) }()
-
+	
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
-			"Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.")
+			"Please check https://pkg.go.dev/github.com/gozelle/gin#readme-don-t-trust-all-proxies for details.")
 	}
-
+	
 	err = http.ListenAndServeTLS(addr, certFile, keyFile, engine.Handler())
 	return
 }
@@ -511,19 +512,19 @@ func (engine *Engine) RunTLS(addr, certFile, keyFile string) (err error) {
 func (engine *Engine) RunUnix(file string) (err error) {
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
 	defer func() { debugPrintError(err) }()
-
+	
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
-			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			"Please check https://pkg.go.dev/github.com/gozelle/gin#readme-don-t-trust-all-proxies for details.")
 	}
-
+	
 	listener, err := net.Listen("unix", file)
 	if err != nil {
 		return
 	}
 	defer listener.Close()
 	defer os.Remove(file)
-
+	
 	err = http.Serve(listener, engine.Handler())
 	return
 }
@@ -534,12 +535,12 @@ func (engine *Engine) RunUnix(file string) (err error) {
 func (engine *Engine) RunFd(fd int) (err error) {
 	debugPrint("Listening and serving HTTP on fd@%d", fd)
 	defer func() { debugPrintError(err) }()
-
+	
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
-			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			"Please check https://pkg.go.dev/github.com/gozelle/gin#readme-don-t-trust-all-proxies for details.")
 	}
-
+	
 	f := os.NewFile(uintptr(fd), fmt.Sprintf("fd@%d", fd))
 	listener, err := net.FileListener(f)
 	if err != nil {
@@ -555,12 +556,12 @@ func (engine *Engine) RunFd(fd int) (err error) {
 func (engine *Engine) RunListener(listener net.Listener) (err error) {
 	debugPrint("Listening and serving HTTP on listener what's bind with address@%s", listener.Addr())
 	defer func() { debugPrintError(err) }()
-
+	
 	if engine.isUnsafeTrustedProxies() {
 		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
-			"Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.")
+			"Please check https://pkg.go.dev/github.com/gozelle/gin#readme-don-t-trust-all-proxies for details.")
 	}
-
+	
 	err = http.Serve(listener, engine.Handler())
 	return
 }
@@ -571,9 +572,9 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c.writermem.reset(w)
 	c.Request = req
 	c.reset()
-
+	
 	engine.handleHTTPRequest(c)
-
+	
 	engine.pool.Put(c)
 }
 
@@ -584,7 +585,7 @@ func (engine *Engine) HandleContext(c *Context) {
 	oldIndexValue := c.index
 	c.reset()
 	engine.handleHTTPRequest(c)
-
+	
 	c.index = oldIndexValue
 }
 
@@ -596,11 +597,11 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 		rPath = c.Request.URL.RawPath
 		unescape = engine.UnescapePathValues
 	}
-
+	
 	if engine.RemoveExtraSlash {
 		rPath = cleanPath(rPath)
 	}
-
+	
 	// Find root of the tree for the given HTTP method
 	t := engine.trees
 	for i, tl := 0, len(t); i < tl; i++ {
@@ -631,7 +632,7 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 		}
 		break
 	}
-
+	
 	if engine.HandleMethodNotAllowed {
 		for _, tree := range engine.trees {
 			if tree.method == httpMethod {
@@ -686,7 +687,7 @@ func redirectTrailingSlash(c *Context) {
 func redirectFixedPath(c *Context, root *node, trailingSlash bool) bool {
 	req := c.Request
 	rPath := req.URL.Path
-
+	
 	if fixedPath, ok := root.findCaseInsensitivePath(cleanPath(rPath), trailingSlash); ok {
 		req.URL.Path = bytesconv.BytesToString(fixedPath)
 		redirectRequest(c)
@@ -699,7 +700,7 @@ func redirectRequest(c *Context) {
 	req := c.Request
 	rPath := req.URL.Path
 	rURL := req.URL.String()
-
+	
 	code := http.StatusMovedPermanently // Permanent redirect, request with GET method
 	if req.Method != http.MethodGet {
 		code = http.StatusTemporaryRedirect
